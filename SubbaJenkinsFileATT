@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage ('CleanUp stage'){
+            steps{
+                 bat 'echo Cleanup stage'
+                 cleanWs notFailBuild: true
+            }
+                
+            }
+          
+        
+         stage ('Git checkout stage'){
+             steps{
+                 bat 'echo Git checkout stage'
+                 checkout([$class: 'GitSCM', branches: [[name: '**']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/subbarao123j/KarateFrameworkTutorial.git']]])
+                 
+                 }
+             
+         }
+    
+
+                 
+                 
+        
+         stage ('Restore Package stage'){
+             steps {
+             bat 'echo Restore Package stag'
+            
+             }}
+        
+         stage ('Build stage'){
+             steps{
+             bat 'echo Build stage'
+             bat 'mvn clean compile'
+            
+             }
+        }
+         stage ('Test Exxecution stage'){
+             steps{
+             bat ' echo Test Exxecution stage'
+             bat 'mvn test'
+                    }
+
+         }
+
+}
+
+
+post {
+  always {
+   junit 'target/surefire-reports/*.xml'
+   cucumber buildStatus: 'null', customCssFiles: '', customJsFiles: '', failedFeaturesNumber: -1, failedScenariosNumber: -1, failedStepsNumber: -1, fileIncludePattern: '**/*.json', jsonReportDirectory: 'target/surefire-reports', pendingStepsNumber: -1, reportTitle: 'Karate Test Execution Report from AQE Automation Team for ATT Project', skippedStepsNumber: -1, sortingMethod: 'ALPHABETICAL', undefinedStepsNumber: -1
+  }
+}
+
+
+  }
+    
+
